@@ -35,26 +35,23 @@ Reglas de implementación:
 - Usa el contrato de Datos sin volver a diseñar tablas ni regenerar sus migraciones.
 
 Restricciones:
-- No expongas mensajes internos de excepción. El mensaje de error debe ser el mismo para usuario inexistente y contraseña incorrecta.
-- No almacenes ni registres contraseñas en texto plano.
-- No registres información sensible en los logs.
+- No expongas stack traces ni detalles internos; conserva los códigos y mensajes de error que establece el contrato.
+- No registres documentos de prueba, datos sensibles ni cuerpos completos de pago en los logs.
 
 Evidencia obligatoria en backend_spec.md:
 - Un caso válido (entrada, servicio, persistencia, respuesta) con su código de estado.
 - Un caso de error con su código de estado y el mensaje devuelto.
 - Comandos para comprobarlos: mvn quarkus:dev y una llamada con curl a la ruta que fije el contrato de Arquitectura.
 
-Onboarding de wallet en Perú (criterios 1-6):
-- Valida en el servidor cada paso: campos obligatorios, formatos y datos inválidos. Responde con el código de error del contrato de Arquitectura y un mensaje accionable que indique el campo afectado y cómo corregirlo, sin exponer detalles internos.
-- Si la validación falla, no avances el paso ni cambies el estado de la wallet.
-- Pasa la wallet a activo solo cuando todos los pasos obligatorios estén completos. La transición debe ser atómica y no repetible.
-- La respuesta de estado del onboarding debe incluir el paso actual y los pasos restantes, para que la interfaz muestre la secuencia en todo momento.
-- Emite eventos de inicio de onboarding, finalización de cada paso y cierre del flujo (completado o abandonado). Los eventos no deben contener datos personales en claro, y los logs no deben registrarlos.
-- Las operaciones deben ser idempotentes, porque el móvil puede reintentar peticiones.
-- Autoriza cada lectura y cambio de estado sobre la wallet del usuario autenticado.
-- No definas límites de montos ni requisitos KYC: si no están en el contrato aprobado, regístralos como pendientes.
-- En backend_spec.md añade un caso de paso inválido con su mensaje accionable y un caso de finalización que cambia la wallet a activo.
-- Marca como NO EJECUTADO cualquier comando o resultado que no hayas corrido realmente. No inventes salidas.
+Si el Issue usa Wallet mock W1-W6 v0.3.0, implementa o integra únicamente las rutas, campos, estados y códigos de respuesta definidos allí; el mock es local, sin autenticación y con estado en memoria. No inventes endpoints de pasos de onboarding, autorización de usuario, eventos analíticos ni persistencia durable. Si el producto requiere esas capacidades adicionales, sepáralas como brechas fuera del contrato.
+- W1: POST /kyc/verifications requiere documentType=TEST y document con prefijo TEST-. APPROVED es el escenario predeterminado y crea wallet ACTIVE; REJECTED crea wallet REJECTED; MANUAL_REVIEW crea wallet PENDING y un caso de soporte; UNAVAILABLE responde 503 KYC_UNAVAILABLE sin crear wallet. La decisión /kyc/verifications/{id}/decision solo aplica a KYC PENDING, acepta ACTIVE o REJECTED, repetir la misma decisión es seguro y cambiar una decisión final devuelve 409.
+- W2: POST /payments requiere walletId, recipient, amountCents y el header Idempotency-Key; solo acepta contact-demo/merchant-demo y moneda PEN. amountCents es entero en céntimos. La misma clave por wallet y mismo contenido devuelve el pago actual; contenido distinto devuelve 409 IDEMPOTENCY_CONFLICT. Respeta las diferencias entre APPROVED/REJECTED (encolan evento), PENDING/DELAYED_APPROVAL (esperan control), TIMEOUT_AFTER_PROCESSING (504 con paymentId aunque creó y aprobó el pago del proveedor) y PROVIDER_ERROR (503 sin crear pago ni reserva).
+- Mantén las invariantes del contrato: wallet-demo comienza con 100000 céntimos; available = balance - reserved; pagos PENDING reservan; solo la entrega de evento confirma o rechaza y actualiza wallet/ledger. Un callback repetido no duplica el efecto. IDs de KYC, wallet, pago, reverso y evento son distintos según su recurso.
+- W3: genera payload qrmock:ID, no una imagen; /qrs/resolve no crea pagos. Al crear un pago QR, pasa qrId y respeta comercio, monto fijo y vencimiento.
+- W4-W5: los eventos son locales y no hay webhook automático. /payments/{id}/resolve consulta el proveedor y puede escalar un pendiente; el reverso es completo, único por pago SUCCEEDED, queda PENDING hasta entregar su evento y entonces devuelve saldo.
+- W6: /control/settlements altera solo el reporte del proveedor; /reconciliations compara proveedor, wallet y ledger y no mueve dinero ni corrige saldos. /control/reset repone la semilla y borra todos los datos del grupo; úsalo solo en un entorno de prueba aislado y con autorización.
+- Trata 400, 404, 409, 410, 413, 429 cloud-only, 503 y 504 según cada operación y el Error del contrato; cuerpos mayores a 65536 bytes reciben 413. La latencia simulada admite 0..5000 ms, y un valor inválido devuelve 400 antes de ejecutar la operación.
+- En backend_spec.md documenta casos representativos por flujo, el código HTTP y el efecto observable en wallet/eventos/ledger; marca NO EJECUTADO cualquier comando o resultado que no hayas corrido realmente. No inventes salidas.
 
 Entrega backend_spec.md y el código Java con el formato de extracción que exige build_task."""
 
