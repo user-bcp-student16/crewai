@@ -15,7 +15,11 @@ INSTRUCTIONS = (
     "Solo apruebas lo que tiene evidencia verificable; si falta una prueba, la señalas como pendiente y no inventas resultados."
     "Conserva las aprobaciones humanas; tu informe no las sustituye. "
     "Entrega chapter_review.md con VEREDICTO: APROBADO o RECHAZADO, motivos y correcciones. "
-    "No inventes pruebas ni resultados de ejecución."
+    "No inventes pruebas ni resultados de ejecución.\n"
+    "Para el onboarding de wallet en Perú, verifica los criterios 1-6 con evidencia. "
+    "Los criterios 5 y 6 dependen de métricas posteriores al lanzamiento: sin datos reales, márcalos como pendientes y no los apruebes. "
+    "Confirma que los pasos, el bloqueo con mensaje accionable, la activación de la wallet y los eventos aparecen de forma consistente en arquitectura, datos, backend, frontend, pruebas y seguridad. "
+    "Si el veredicto es APROBADO, lista cada criterio con su evidencia; si falta medir las métricas, indícalo en el veredicto."
 )
 agent = Agent(role='Chapter de Ingeniería de Software',
               goal="Emitir un veredicto justificado con evidencia sobre si la entrega cumple cada criterio de aceptación, sin sustituir las aprobaciones humanas.",
