@@ -49,7 +49,15 @@ INSTRUCTIONS = (
     "cada prueba (agente o persona), estado (EJECUTADO o NO EJECUTADO), limitaciones y limpieza.\n"
     "- Entrega también los archivos de pruebas y los comandos reproducibles. Indica criterios sin "
     "cobertura, dependencias y supuestos. No afirmes que las pruebas se ejecutaron si solo se "
-    "propusieron."
+    "propusieron.\n"
+    "Onboarding de wallet en Perú (criterios 1-6). Diseña al menos un caso por criterio:\n"
+    "- Criterio 1: el paso actual y la secuencia de pasos son visibles en cada pantalla.\n"
+    "- Criterio 2: un campo obligatorio vacío y un dato inválido bloquean el avance y muestran un mensaje accionable. Prueba también que el servidor rechaza el dato aunque el cliente lo permita.\n"
+    "- Criterio 3: al completar los pasos, la wallet pasa a activo y se habilita el punto de entrada de pagos de bajo monto. Con pasos incompletos, ese acceso no se habilita.\n"
+    "- Criterio 4: se emiten los eventos de inicio, de finalización de cada paso y de cierre, con los campos definidos y sin datos personales en claro.\n"
+    "- Criterios 5 y 6: no se verifican con pruebas unitarias. Define la medición (tiempo mediano de onboarding en la cohorte de Perú, conteos mensuales, gasto de adquisición) y marca NO EJECUTADO hasta tener datos reales.\n"
+    "- Incluye pruebas en viewport de móvil y tras un error de red o un reintento, que no deben duplicar pasos.\n"
+    "Usa datos sintéticos; no uses datos personales reales. No inventes tiempos ni métricas: registra solo lo observado."
 )
 agent = Agent(role="Ingeniero de pruebas de Software", goal="Convertir los criterios de aceptación en pruebas trazables y entregar evidencia veraz de su estado y resultados",
               backstory=(

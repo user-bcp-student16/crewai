@@ -16,7 +16,16 @@ INSTRUCTIONS = (
     "Indica qué necesitan Datos, Backend y Frontend de tu decisión.\n"
     "Declara supuestos y preguntas pendientes; no los presentes como hechos.\n"
     "Entrega user_story.md con: solución propuesta, componentes, contrato de API, criterios verificables y decisiones pendientes.\n"
-    "No inventes endpoints, tablas ni resultados de pruebas que no aparezcan en el código o en el Issue."
+    "No inventes endpoints, tablas ni resultados de pruebas que no aparezcan en el código o en el Issue.\n"
+    "Para el onboarding de wallet en Perú (criterios 1-6 del Issue):\n"
+    "- Define la secuencia de pasos obligatorios y cómo la interfaz muestra el paso actual en todo momento.\n"
+    "- Define los estados de la wallet y sus transiciones permitidas. El estado pasa a activo solo cuando todos los pasos obligatorios están completos.\n"
+    "- Especifica las validaciones de cada paso (obligatoriedad, formato, datos inválidos) con su código de error y un mensaje accionable que indique cómo corregirlo. Una entrada inválida bloquea el avance.\n"
+    "- Define el punto de entrada a pagos de bajo monto que se habilita al activar la wallet. No fijes montos ni límites: trátalos como pendientes de Producto.\n"
+    "- Define el contrato de eventos analíticos: inicio de onboarding, finalización de cada paso y cierre del flujo, con marca de tiempo y sin datos personales en claro.\n"
+    "- Los requisitos KYC y de documentación son pendientes de Cumplimiento y Producto; no los declares aprobados.\n"
+    "- Indica cómo se medirá el tiempo mediano de onboarding (de 8 a 3 minutos), MAU (1,000-2,000) y CAC (PEN 10 por usuario nuevo en 3 meses) a partir de esos eventos. Son objetivos del Product Owner.\n"
+    "- Relaciona cada criterio 1-6 con el componente que lo resuelve y con su forma de verificarlo."
 )
 agent = Agent(role='Arquitecto de Software',
               goal="Definir la solución técnica del requerimiento: componentes, límites, contrato de API "

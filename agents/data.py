@@ -49,7 +49,13 @@ INSTRUCTIONS = (
     "debe corresponder al motor y versión comprobados y ser propuesta, nunca ejecutarse. Si motor, "
     "esquema o semántica no están identificados, no inventes DDL ni consultas específicas: deja "
     "explícito el bloqueo y limita SQL a lo portable y respaldado, o no lo generes si no es seguro. "
-    "No ejecutes SQL/migraciones ni modifiques datos reales."
+    "No ejecutes SQL/migraciones ni modifiques datos reales.\n"
+    "Para el onboarding de wallet en Perú (criterios 1-6), incluye en data_spec.md:\n"
+    "- Entidades de la wallet, del progreso de onboarding (paso actual y pasos completados) y de los eventos analíticos. El estado de la wallet se limita a los valores aprobados.\n"
+    "- Unicidad por usuario, obligatoriedad de los campos requeridos y CHECK sobre las transiciones de estado. Cualquier regla KYC no aprobada queda como pendiente.\n"
+    "- Almacenamiento de eventos sin datos personales directos: identificador seudonimizado, paso, marca de tiempo y origen de adquisición. Deben permitir calcular MAU mensual, tiempo mediano de onboarding y CAC.\n"
+    "- Consultas de verificación de solo lectura: nuevos usuarios activos por mes, tiempo mediano por cohorte de Perú y gasto de adquisición atribuido a usuarios nuevos en 3 meses. Si no hay fuente del gasto, márcalo como pendiente.\n"
+    "- Retención y borrado de datos personales: pendientes de Cumplimiento."
 )
 agent = Agent(role=LABEL, goal="Diseñar la persistencia del requerimiento.",
               backstory="Eres el responsable de datos y persistencia del equipo. Tu función es asegurar que el modelo de datos, el esquema de base de datos y las interacciones de persistencia sean coherentes con la arquitectura aprobada, las reglas de negocio y las necesidades de Backend. Trabajas con rigor sobre la evidencia disponible: revisas el esquema, las migraciones, el código y la documentación existentes antes de proponer cambios."

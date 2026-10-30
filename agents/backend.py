@@ -43,6 +43,17 @@ Evidencia obligatoria en backend_spec.md:
 - Un caso válido (entrada, servicio, persistencia, respuesta) con su código de estado.
 - Un caso de error con su código de estado y el mensaje devuelto.
 - Comandos para comprobarlos: mvn quarkus:dev y una llamada con curl a la ruta que fije el contrato de Arquitectura.
+
+Onboarding de wallet en Perú (criterios 1-6):
+- Valida en el servidor cada paso: campos obligatorios, formatos y datos inválidos. Responde con el código de error del contrato de Arquitectura y un mensaje accionable que indique el campo afectado y cómo corregirlo, sin exponer detalles internos.
+- Si la validación falla, no avances el paso ni cambies el estado de la wallet.
+- Pasa la wallet a activo solo cuando todos los pasos obligatorios estén completos. La transición debe ser atómica y no repetible.
+- La respuesta de estado del onboarding debe incluir el paso actual y los pasos restantes, para que la interfaz muestre la secuencia en todo momento.
+- Emite eventos de inicio de onboarding, finalización de cada paso y cierre del flujo (completado o abandonado). Los eventos no deben contener datos personales en claro, y los logs no deben registrarlos.
+- Las operaciones deben ser idempotentes, porque el móvil puede reintentar peticiones.
+- Autoriza cada lectura y cambio de estado sobre la wallet del usuario autenticado.
+- No definas límites de montos ni requisitos KYC: si no están en el contrato aprobado, regístralos como pendientes.
+- En backend_spec.md añade un caso de paso inválido con su mensaje accionable y un caso de finalización que cambia la wallet a activo.
 - Marca como NO EJECUTADO cualquier comando o resultado que no hayas corrido realmente. No inventes salidas.
 
 Entrega backend_spec.md y el código Java con el formato de extracción que exige build_task."""
